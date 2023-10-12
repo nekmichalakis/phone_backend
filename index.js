@@ -18,7 +18,7 @@ const errorHandler = (error, request, response, next) => {
     if (error.name === 'CastError') {
         return response.status(400).send({ error: 'malformatted id' })
     } else if (error.name === 'ValidationError') {
-        return response.status(400).json({ error: error.message })  
+        return response.status(400).json({ error: error.message })
     }
 
     next(error)
@@ -26,7 +26,7 @@ const errorHandler = (error, request, response, next) => {
 
 app.get('/info', (request, response) => {
     Person.countDocuments({})
-        .then(count => 
+        .then(count =>
             response.send(
                 `<p>Phonebook has info for ${count} people</p>
                 <p>${new Date().toString()}</p>`
@@ -46,17 +46,17 @@ app.get('/api/persons/:id', (request, response, next) => {
     Person.findById(request.params.id)
         .then(person => {
             person
-            ?
-            response.json(person)
-            :
-            response.status(404).end()
+                ?
+                response.json(person)
+                :
+                response.status(404).end()
         })
         .catch(error => next(error))
 })
 
 app.delete('/api/persons/:id', (request, response, next) => {
     Person.findByIdAndRemove(request.params.id)
-        .then(result => {
+        .then(() => {
             response.status(204).end()
         })
         .catch(error => next(error))
@@ -65,7 +65,7 @@ app.delete('/api/persons/:id', (request, response, next) => {
 app.post('/api/persons', (request, response, next) => {
     const person = new Person({
         name: request.body.name,
-        number: request.body.number    
+        number: request.body.number
     })
 
     person.save()
@@ -93,5 +93,5 @@ app.use(errorHandler)
 
 const PORT = process.env.PORT
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+    console.log(`Server running on port ${PORT}`)
 })
